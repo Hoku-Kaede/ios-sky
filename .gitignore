@@ -1,0 +1,31 @@
+# Large firmware + extracted images
+firmware/
+extracted/
+
+# Read-only upstream clones
+refs/
+
+# Device dumps (may contain device-specific data)
+recon/
+dtb/
+backup/
+research/
+logs/
+
+# Apple artifacts
+*.ipsw
+*.im4p
+*.adt
+d22ap.adt
+
+# Build output
+out/
+*.img
+*.dtb
+*.dtbo
+*.elf
+*.tgz
+
+# Python
+__pycache__/
+*.pyc
