@@ -56,20 +56,31 @@ bugreport for user 0. Lawnchair + iOS Icon Pack installed (hash
 `46547dec8655bfcd27f34e7dd1007c9ec5a3d36414e5612d46c6b67bd32ebc94`),
 Lawnchair set as default home. Icon theme not yet applied in UI.
 
-## Data safety blocker
+## Data safety
 
-`D:\PhoneBackup` has 13.78 GiB (WhatsApp/YouCut). Phone still holds
-`DCIM` 14 GiB, `Pictures` 3.5 GiB, `Movies` 1.4 GiB. D: free is ~12 GiB.
-Need >=19 GiB elsewhere before unlock/flash. `DCIM/Camera` not backed up.
+`D:\PhoneBackup` has 13.78 GiB WhatsApp/YouCut, verified.
+Documents copied 2026-11-20, verified byte-for-byte:
+
+- `/sdcard/Documents` -> `D:\PhoneBackup\Documents`: 85 files, 556910 bytes.
+- `/sdcard/Download` document files -> `D:\PhoneBackup\DownloadDocuments`:
+  47 files, 47698054 bytes. Extensions: pdf/doc/docx/txt/xls/xlsx/ppt/pptx/
+  odt/epub/rtf/csv.
+- `fifth sem.pdf` is zero bytes on phone and backup. No other PDF/DOC/TXT
+  files exist outside those two locations.
+- No erase performed. Await explicit erase scope confirmation.
+
+Phone still holds `DCIM` 14 GiB, `Pictures` 3.5 GiB, `Movies` 1.4 GiB plus
+non-document Download files. User said non-documents may be erased, but
+destructive action is still gated on explicit confirmation.
 
 ## Repo / git
 
-`ios-sky/` is currently untracked inside `D:\work` (BeerusX repo, remote
-`Hoku-Kaede/BeerusX.git`). Local identity there: `Beerus` /
-`317692443+Hoku-Kaede@users.noreply.github.com`.
+`ios-sky/` is its own git repo, public remote `Hoku-Kaede/ios-sky`.
+Local identity: `Beerus` / `317692443+Hoku-Kaede@users.noreply.github.com`.
 `gh` authenticated as `Hoku-Kaede` (`gist`, `read:org`, `repo`).
-No `ios-sky` repo exists yet. Create it; commit text/tools only.
-Keep `firmware/`, `extracted/`, `recon/*.dtb`, dumps and Apple artifacts out.
+Pushed commits: `051d233` (initial recon), `ec4823f` (port base).
+Commit text/tools only. Keep `firmware/`, `extracted/`, `recon/*.dtb`,
+dumps, serials and Apple artifacts out.
 
 ## Progress (2026-11-20)
 
@@ -85,14 +96,16 @@ Keep `firmware/`, `extracted/`, `recon/*.dtb`, dumps and Apple artifacts out.
   `0x600`, cpufreq probe disabled. PS_HOLD still unresolved.
 - Added `tools/unpack_bootv4.py`; verified boot.img and vendor_boot.img
   extraction. `tools/mkadt.py` runs and emits `recon/sky.adt`.
+- Copied and verified all phone documents to `D:\PhoneBackup`; no erase yet.
 - XNU patches not yet edited for the sky framebuffer (`0xb8000000`).
   No shim compile available locally (no aarch64 cross compiler).
 
 ## Next concrete actions
 
-1. Back up `DCIM`, `Pictures`, `Movies` to a drive with >=19 GiB free.
-2. Dump live FDT via `adb exec-out cat /sys/firmware/fdt`; confirm memory
-   banks, PS_HOLD, touch status and GCC/QUP RCG offsets.
+1. Confirm exact erase scope with user. Documents already copied+verified.
+2. Dump live FDT via recovery/temporary boot; confirm memory banks, PS_HOLD,
+   touch status and GCC/QUP RCG offsets. Shell read of `/proc/device-tree`
+   is permission denied.
 3. Edit framebuffer address in XNU patches (final override patch).
 4. Set up `macos-14` CI build; QEMU smoke test.
 5. Ask user to confirm unlock and first temporary `fastboot boot`.
