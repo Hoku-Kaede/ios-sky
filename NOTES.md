@@ -71,15 +71,31 @@ Need >=19 GiB elsewhere before unlock/flash. `DCIM/Camera` not backed up.
 No `ios-sky` repo exists yet. Create it; commit text/tools only.
 Keep `firmware/`, `extracted/`, `recon/*.dtb`, dumps and Apple artifacts out.
 
+## Progress (2026-11-20)
+
+- `Hoku-Kaede/ios-sky` created, public, first commit `051d233` pushed.
+- Topaz base copied in: `shim/`, `xnu/patches/` (201), `userland/`,
+  `.github/`, tools. Upstream README kept as reference with a sky header.
+- Applied sky MMIO to `tools/mkadt.py`: GICD `0x17200000`, GICR
+  `0x17260000`, FB `0xb8000000`/`0x2b00000`, UFS `0x1d84000`,
+  kernel RAM window `0xbb000000 + 0x24000000`, synthetic ECID, sky strings,
+  8 CPU nodes with sky MPIDRs (`SKY_CPUS=N` override).
+- Applied sky MMIO to `shim/shim.c`: GICD/GICR, IMEM `0x146aaf65c`,
+  CPU topology (6 A55 at `0x0-0x5`, 2 A78 at `0x600/0x700`), handoff target
+  `0x600`, cpufreq probe disabled. PS_HOLD still unresolved.
+- Added `tools/unpack_bootv4.py`; verified boot.img and vendor_boot.img
+  extraction. `tools/mkadt.py` runs and emits `recon/sky.adt`.
+- XNU patches not yet edited for the sky framebuffer (`0xb8000000`).
+  No shim compile available locally (no aarch64 cross compiler).
+
 ## Next concrete actions
 
 1. Back up `DCIM`, `Pictures`, `Movies` to a drive with >=19 GiB free.
 2. Dump live FDT via `adb exec-out cat /sys/firmware/fdt`; confirm memory
    banks, PS_HOLD, touch status and GCC/QUP RCG offsets.
-3. Create `Hoku-Kaede/ios-sky`, commit tools + recon text.
-4. Copy topaz patches/shim/tools; apply MMIO edits from `PORT-PLAN.md`.
-5. Build in CI, QEMU smoke test, then ask user to confirm unlock and first
-   temporary `fastboot boot`.
+3. Edit framebuffer address in XNU patches (final override patch).
+4. Set up `macos-14` CI build; QEMU smoke test.
+5. Ask user to confirm unlock and first temporary `fastboot boot`.
 
 ## Guesses — not verified
 
